@@ -16,7 +16,6 @@ use kvm_bindings::*;
 use kvm_ioctls::VmFd;
 use log::debug;
 use nix::sys::mman::*;
-use vmm_sys_util::eventfd::EventFd;
 use x86_64::{
 	structures::paging::{Page, PageTable, PageTableFlags, Size2MiB},
 	PhysAddr,
@@ -73,12 +72,6 @@ impl Uhyve {
 		let mem = MmapMemory::new(0, memory_size, 0, params.thp, params.ksm);
 
 		let sz = cmp::min(memory_size, KVM_32BIT_GAP_START);
-
-		// create virtio interface
-		// TODO: Remove allow once fixed:
-		// https://github.com/rust-lang/rust-clippy/issues/11382
-		#[allow(clippy::arc_with_non_send_sync)]
-		let virtio_device = Arc::new(Mutex::new(VirtioNetPciDevice::new()));
 
 		let kvm_mem = kvm_userspace_memory_region {
 			slot: 0,
@@ -152,8 +145,15 @@ impl Uhyve {
 		vm.enable_cap(&cap)
 			.expect("Unable to disable exists due pause instructions");
 
-		let evtfd = EventFd::new(0).unwrap();
-		vm.register_irqfd(&evtfd, UHYVE_IRQ_NET)?;
+		// create virtio device
+		let virtio_device = Arc::new(Mutex::new(VirtioNetPciDevice::new()));
+
+		// Write configuration and register eventfds
+		virtio_device
+			.lock()
+			.as_deref_mut()
+			.expect("Could not lock VirtIO device for setup")
+			.setup(&vm);
 
 		let cpu_count = params.cpu_count.get();
 
