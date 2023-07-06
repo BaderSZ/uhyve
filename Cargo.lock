@@ -738,7 +738,7 @@ version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "081fbd8164229a990fbf24a1f35d287740db110c2b5d42addf460165f1b0e032"
 dependencies = [
- "vmm-sys-util",
+ "vmm-sys-util 0.12.1",
 ]
 
 [[package]]
@@ -750,7 +750,7 @@ dependencies = [
  "bitflags 2.4.2",
  "kvm-bindings",
  "libc",
- "vmm-sys-util",
+ "vmm-sys-util 0.12.1",
 ]
 
 [[package]]
@@ -1503,8 +1503,9 @@ dependencies = [
  "tun-tap",
  "uhyve-interface",
  "virtio-bindings",
+ "virtio-queue",
  "vm-memory",
- "vmm-sys-util",
+ "vmm-sys-util 0.12.1",
  "x86_64",
  "xhypervisor",
  "zerocopy 0.6.6",
@@ -1555,6 +1556,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "878bcb1b2812a10c30d53b0ed054999de3d98f25ece91fc173973f9c57aaae86"
 
 [[package]]
+name = "virtio-queue"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "35aca00da06841bd99162c381ec65893cace23ca0fb89254302cfe4bec4c300f"
+dependencies = [
+ "log",
+ "virtio-bindings",
+ "vm-memory",
+ "vmm-sys-util 0.11.2",
+]
+
+[[package]]
 name = "vm-memory"
 version = "0.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1563,6 +1576,16 @@ dependencies = [
  "libc",
  "thiserror",
  "winapi",
+]
+
+[[package]]
+name = "vmm-sys-util"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "48b7b084231214f7427041e4220d77dfe726897a6d41fddee450696e66ff2a29"
+dependencies = [
+ "bitflags 1.3.2",
+ "libc",
 ]
 
 [[package]]
